@@ -12,7 +12,7 @@ public class MyFlipKart {
     }
 
     public static void main(String[] args) {
-        // -------Data generation code ---- START ------------------------------//
+        // -------Data generation code ---- START -----------------------------//
 
         // Creating Customer --> Piyush
         Customer piyush = new Customer("Piyush Khandelwal","9876987655");
