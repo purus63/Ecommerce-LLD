@@ -9,12 +9,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ProductsCatalog implements Searchable{
-    private ArrayList<Product> products;
-    private ArrayList<Category> categories;
-    private HashMap<String,ArrayList<Product>> categoryProductMap;
-    private HashMap<String,ArrayList<Seller>> productSellerMap;
-    private ConcurrentHashMap<String,ArrayList<Product>> similarProducts;
-
+    private ArrayList<Product> products;	// add product to productlist
+    private ArrayList<Category> categories; // add category to categorylist
+    private HashMap<String,ArrayList<Product>> categoryProductMap;  // search by product category
+    private HashMap<String,ArrayList<Seller>> productSellerMap;	// adding seller to seller list for a product
+    private ConcurrentHashMap<String,ArrayList<Product>> similarProducts;  // search by productname
+    
+    
+    //constructor
     public ProductsCatalog(){
         products = new ArrayList<>();
         categories = new ArrayList<>();
@@ -23,7 +25,8 @@ public class ProductsCatalog implements Searchable{
         similarProducts.put("Dummy Product",new ArrayList<Product>());
         productSellerMap = new HashMap<>();
     }
-
+    
+    // add or update productarraylist in similarproducts map for a given product name
     public void updateSimilarProductsMap(Product newProduct){
         String productName = newProduct.getName().toLowerCase();
         Set<String> keySet = similarProducts.keySet();
@@ -38,11 +41,14 @@ public class ProductsCatalog implements Searchable{
             similarProducts.put(newProduct.getName().toLowerCase(),new ArrayList<Product>(Arrays.asList(newProduct)));
         }
     }
+    //initialisation of categoryproductmap
     private void updateCategoryProductMap(){
         for(Category category : categories){
             categoryProductMap.put(category.getName().toLowerCase(), new ArrayList<Product>());
         }
     }
+    
+    //adding product to categoryproductmap
     private void updateCategoryProductMap(Product product){
         if(categoryProductMap.containsKey(product.getCategory().getName().toLowerCase())){
             categoryProductMap.get(product.getCategory().getName().toLowerCase()).add(product);
@@ -51,6 +57,8 @@ public class ProductsCatalog implements Searchable{
         }
 
     }
+    
+    //adding seller to list based on key product name to productSellermap
     private void updateProductSellerMap(Product newProduct){
         if(productSellerMap.containsKey(newProduct.getName().toLowerCase())){
             productSellerMap.get(newProduct.getName().toLowerCase()).add(newProduct.getSeller());
@@ -58,17 +66,20 @@ public class ProductsCatalog implements Searchable{
             productSellerMap.put(newProduct.getName().toLowerCase(),new ArrayList<>(Arrays.asList(newProduct.getSeller())));
         }
     }
-
+    
+    //adding category to category list
     public void addCategory(Category newCategory){
         categories.add(newCategory);
         updateCategoryProductMap();
 
     }
 
+    // getter method for similarproducts
     public ConcurrentHashMap<String, ArrayList<Product>> getSimilarProducts() {
         return similarProducts;
     }
 
+    //adding product to productslist, updating product seller map, updating categorymap, updating similarproductmap
     public void addProduct(Product product){
         products.add(product);
         updateProductSellerMap(product);
@@ -93,7 +104,8 @@ public class ProductsCatalog implements Searchable{
     public ArrayList<Product> searchCategory(String categoryName) {
         return categoryProductMap.get(categoryName.toLowerCase());
     }
-
+    
+    //updating product quantity
     public void updateProductQuantity(Product product, int newQuantity) {
         for(Product prod: products){
             if(prod.getId()==product.getId()){
@@ -101,7 +113,7 @@ public class ProductsCatalog implements Searchable{
             }
         }
     }
-
+    // remove product from products
     public void removeProduct(Product product) {
         products.remove(product);
     }
